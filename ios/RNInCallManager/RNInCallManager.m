@@ -164,9 +164,9 @@ RCT_EXPORT_METHOD(start:(NSString *)mediaType
         [self startRingback:ringbackUriType];
     }
 
-    if ([_media isEqualToString:@"audio"]) {
-        [self startProximitySensor];
-    }
+//     if ([_media isEqualToString:@"audio"]) {
+//         [self startProximitySensor];
+//     }
     [self setKeepScreenOn:YES];
     _audioSessionInitialized = YES;
     //self.debugAudioSession()
