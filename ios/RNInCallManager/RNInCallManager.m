@@ -904,31 +904,17 @@ RCT_EXPORT_METHOD(getIsWiredHeadsetPluggedIn:(RCTPromiseResolveBlock)resolve
                     NSLog(@"RNInCallManager.AudioRouteChange.Reason: NewDeviceAvailable");
                     if ([self checkAudioRoute:@[AVAudioSessionPortHeadsetMic]
                                     routeType:@"input"]) {
-                        [self sendEventWithName:@"WiredHeadset"
-                                           body:@{
-                                               @"isPlugged": @YES,
-                                               @"hasMic": @YES,
-                                               @"deviceName": AVAudioSessionPortHeadsetMic,
-                                           }];
+                      
                     } else if ([self checkAudioRoute:@[AVAudioSessionPortHeadphones]
                                            routeType:@"output"]) {
-                        [self sendEventWithName:@"WiredHeadset"
-                                           body:@{
-                                               @"isPlugged": @YES,
-                                               @"hasMic": @NO,
-                                               @"deviceName": AVAudioSessionPortHeadphones,
-                                           }];
+                      
                     }
                     break;
                 case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
                     NSLog(@"RNInCallManager.AudioRouteChange.Reason: OldDeviceUnavailable");
                     if (![self isWiredHeadsetPluggedIn]) {
-                        [self sendEventWithName:@"WiredHeadset"
-                                           body:@{
-                                               @"isPlugged": @NO,
-                                               @"hasMic": @NO,
-                                               @"deviceName": @"",
-                                           }];
+                          _forceSpeakerOn = @YES;
+                          [self updateAudioRoute];
                     }
                     break;
                 case AVAudioSessionRouteChangeReasonCategoryChange:
