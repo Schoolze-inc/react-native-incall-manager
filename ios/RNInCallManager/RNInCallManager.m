@@ -126,7 +126,6 @@ RCT_EXPORT_MODULE(InCallManager)
     return @[@"Proximity",
              @"WiredHeadset"];
 }
-
 RCT_EXPORT_METHOD(start:(NSString *)mediaType
                    auto:(BOOL)_auto
         ringbackUriType:(NSString *)ringbackUriType)
@@ -148,7 +147,7 @@ RCT_EXPORT_METHOD(start:(NSString *)mediaType
     }
     NSLog(@"RNInCallManager.start() start InCallManager. media=%@, type=%@, mode=%@", _media, _media, _incallAudioMode);
     [self storeOriginalAudioSetup];
-    _forceSpeakerOn = 0;
+    // _forceSpeakerOn = 0;
     [self startAudioSessionNotification];
     [self audioSessionSetCategory:_incallAudioCategory
                           options:0
@@ -164,9 +163,9 @@ RCT_EXPORT_METHOD(start:(NSString *)mediaType
         [self startRingback:ringbackUriType];
     }
 
-//     if ([_media isEqualToString:@"audio"]) {
-//         [self startProximitySensor];
-//     }
+//    if ([_media isEqualToString:@"audio"]) {
+//        [self startProximitySensor];
+//    }
     [self setKeepScreenOn:YES];
     _audioSessionInitialized = YES;
     //self.debugAudioSession()
@@ -188,7 +187,7 @@ RCT_EXPORT_METHOD(stop:(NSString *)busytoneUriType)
         NSLog(@"RNInCallManager.stop(): stop InCallManager");
         [self restoreOriginalAudioSetup];
         [self stopBusytone];
-        [self stopProximitySensor];
+//        [self stopProximitySensor];
         [self audioSessionSetActive:NO
                             options:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation
                          callerMemo:NSStringFromSelector(_cmd)];
@@ -199,7 +198,6 @@ RCT_EXPORT_METHOD(stop:(NSString *)busytoneUriType)
         _audioSessionInitialized = NO;
     }
 }
-
 RCT_EXPORT_METHOD(turnScreenOn)
 {
     NSLog(@"RNInCallManager.turnScreenOn(): ios doesn't support turnScreenOn()");
@@ -561,6 +559,7 @@ RCT_EXPORT_METHOD(getIsWiredHeadsetPluggedIn:(RCTPromiseResolveBlock)resolve
         // --- force ON, override speaker only, keep audio mode remain.
         overrideAudioPort = AVAudioSessionPortOverrideSpeaker;
         overrideAudioPortString = @".Speaker";
+
         if ([_media isEqualToString:@"video"]) {
             audioMode = AVAudioSessionModeVideoChat;
             [self stopProximitySensor];
@@ -913,8 +912,9 @@ RCT_EXPORT_METHOD(getIsWiredHeadsetPluggedIn:(RCTPromiseResolveBlock)resolve
                 case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
                     NSLog(@"RNInCallManager.AudioRouteChange.Reason: OldDeviceUnavailable");
                     if (![self isWiredHeadsetPluggedIn]) {
-                          _forceSpeakerOn = @YES;
-                          [self updateAudioRoute];
+                             NSLog(@"HEREREREAR");
+                            [_audioSession overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
+
                     }
                     break;
                 case AVAudioSessionRouteChangeReasonCategoryChange:
